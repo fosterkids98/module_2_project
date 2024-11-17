@@ -19,6 +19,7 @@ class Character:
         self.war_atk_cntr = 0
         self.rage = False
         self.stats_counter = 0
+        self.burn_cntr = 0
     def health_check(self):
         self.heal()
         if self.health > self.max_health:            
@@ -35,6 +36,13 @@ class Character:
     def status_check(self):
         #checks to see if character is frozen or if opponent has dodged
         #checked stats or blocked
+        if self.status == "Burning":
+            self.burn_cntr += 1
+            self.health -= 15
+            print(f"{self.name} was burnt for 15 damage!!")
+            if self.burn_cntr == 3:
+                self.status = ""
+                self.burn_cntr = 0
         if self.status == "Dodged":
             
             self.stun_counter += 1
@@ -83,17 +91,39 @@ class Character:
               "----------------------------------")
         choice = input()
         if choice == '1':
+            #for mages burning effect
+            if self.player_class == "M":
+                opponent.status = "Burning"
+                opponent.burn_cntr = 0
+                attack = self.attack_power
+                attack = random.randint(self.min_damage,self.attack_power)
+                attack += 30
+                opponent.health -= attack
+                print(f"{self.name} attacks {opponent.name} for {attack} damage!")
             #for warrior rage effect
             if self.rage == True:
                 self.war_atk_cntr += 1
                 if self.war_atk_cntr == 4:
                     self.attack_power -= 10
                     self.min_damage -= 10
-            attack = self.attack_power
-            attack = random.randint(self.min_damage,self.attack_power)
-            attack += 25
-            opponent.health -= attack
-            print(f"{self.name} attacks {opponent.name} for {attack} damage!")
+            if self.player_class == "R":
+                attack2 = random.randint(self.min_damage,self.attack_power)
+                attack1 = random.randint(self.min_damage,self.attack_power)
+                attack = attack1 + attack2
+                opponent.health -= attack
+                print(f"{self.name} attacks {opponent.name} for {attack} damage!")
+            if self.player_class == "W":
+                attack = self.attack_power
+                attack = random.randint(self.min_damage,self.attack_power)
+                attack += 20
+                opponent.health -= attack
+                print(f"{self.name} attacks {opponent.name} for {attack} damage!")
+            if self.player_class == "P":
+                attack = self.attack_power
+                attack = random.randint(self.min_damage,self.attack_power)
+                attack += 30
+                opponent.health -= attack
+                print(f"{self.name} attacks {opponent.name} for {attack} damage!")
             if opponent.health <= 0:
                 print(f"{opponent.name} has been defeated!")
             
@@ -163,11 +193,11 @@ class Mage(Character):
 #Archer class
 class Rogue(Character):
     def __init__(self, name):
-        super().__init__(name, health=120, attack_power=30, ability1= "Precision Shot",
-                         ability2= "\t2. Tax Evasion")
+        super().__init__(name, health=120, attack_power=30, ability1= "Double Shot",
+                         ability2= "2. Tax Evasion")
         self.player_class = "R"
-        self.ability1_des = "Fire an arrow directly at your opponents dome!!"
-        self.ability2_des = "Not even the Gov't can catch you!!!"
+        self.ability1_des = "Fire 2 arrows at your enemy!!"
+        self.ability2_des = "\tNot even the Gov't can catch you!!!"
         self.min_damage = 12
     
 #Paladin class
@@ -240,7 +270,7 @@ def battle(player, wizard):
             if wizard.status == "" or wizard.status != "Frozen" and wizard.status != "stats":
                 wizard.health_check()
 
-            if wizard.status == "":
+            if wizard.status == "" or wizard.status == "Burning":
                 wizard.attack(player)
 
         if player.health <= 0:
