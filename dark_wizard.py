@@ -95,7 +95,7 @@ class Character:
             if self.player_class == "M":
                 opponent.status = "Burning"
                 opponent.burn_cntr = 0
-                attack = self.attack_power
+                
                 attack = random.randint(self.min_damage,self.attack_power)
                 attack += 30
                 opponent.health -= attack
@@ -113,13 +113,13 @@ class Character:
                 opponent.health -= attack
                 print(f"{self.name} attacks {opponent.name} for {attack} damage!")
             if self.player_class == "W":
-                attack = self.attack_power
+                
                 attack = random.randint(self.min_damage,self.attack_power)
                 attack += 20
                 opponent.health -= attack
                 print(f"{self.name} attacks {opponent.name} for {attack} damage!")
             if self.player_class == "P":
-                attack = self.attack_power
+                
                 attack = random.randint(self.min_damage,self.attack_power)
                 attack += 30
                 opponent.health -= attack
